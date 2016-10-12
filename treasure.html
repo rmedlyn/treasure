@@ -1,30 +1,111 @@
 <!DOCTYPE html>
 <html>
 <head>
-    <title>Aggie Island</title>
-    
-    <script src="https://code.jquery.com/jquery-3.1.1.min.js"></script>
-	
+  <title>Aggie Island</title>
+
+  <script src="https://code.jquery.com/jquery-3.1.1.min.js"></script>
+
 	<!--feel free to embelish, but ensure you don't disrupt playability-->
-	<style>
-        body{
-			text-align:center;
-		}
-		img{
-			display: block;
-			margin: auto;
-		}
+<style>
+  body{
+		text-align:center;
+	}
+	img {
+		display: block;
+		margin: auto;
+	}
+  .hot {
+    color: red;
+  }
+  .cold {
+    color: blue;
+  }
 	</style>
 </head>
 <body>
-    <h1 id="heading">Find the buried treasure!</h1>
-    
-    <img id="map" width=800 height=600 src="https://ruinexplorer.github.io/Pirate-Map-USU-Campus.png">
-    
-    <p id="distance">Click on the map to search for the Treasure!</p>
-    
-    <script>
-        //Add your code here
-    </script>
+  <h1 id="heading">Find the buried treasure!</h1>
+
+  <img id="map" width=800 height=600 src="https://ruinexplorer.github.io/Pirate-Map-USU-Campus.png">
+
+  <p id="distance">Click on the map to search for the Treasure!</p>
+
+  <script>
+    var height = document.getElementById("map").height,
+        width = document.getElementById("map").width,
+        sideAvg = (height + width)/2,
+        numClicks = 0,
+        treasure = setTreasure();
+// console.log('TREASURE LOCATION', treasure);
+
+    document.getElementById("map").addEventListener("click", function (event) {
+      // var pointClicked = {
+      //   x: event.offsetX,
+      //   y: event.offsetY
+      // };
+// console.log('POINTCLICKED', pointClicked);
+      var distance = calcDistance(event);
+// console.log('DISTANCE', distance);
+      numClicks++;
+      if (numClicks >= 50) {
+
+      }
+      if (distance <= sideAvg * 0.02) {
+        window.alert(`Congratulations! You found the treasure in ${numClicks} clicks!`);
+// console.log('TREASURE LOCATION', treasure);
+        resetGame();
+      }
+      else {
+        updateDistanceElement(distance);
+      }
+    });
+
+    // Get random number
+    function getRandom (size) {
+      return Math.floor(Math.random() * size);
+    }
+
+    var resetGame = function () {
+      numClicks = 0;
+      treasure = setTreasure();
+      setDistanceElement("Click on the map to search for the Treasure!");
+    }
+
+    var calcDistance = function (event) {
+      return Math.sqrt((treasure.x-event.offsetX) * (treasure.x-event.offsetX) + (treasure.y-event.offsetY) * (treasure.y-event.offsetY));
+    }
+
+    var updateDistanceElement = function (distance) {
+      var message = `Arr! Ye have dug ${numClicks} holes! Ye be `;
+      if (distance <= sideAvg * 0.025) {
+        setDistanceElement(message + "<span id='hint'>Boiling hot!</span>");
+      } else if (distance <= sideAvg * 0.05) {
+        setDistanceElement(message + "<span id='hint'>Really hot</span>");
+      } else if (distance <= sideAvg * 0.1) {
+        setDistanceElement(message + "<span id='hint'>Hot</span>");
+      } else if (distance <= sideAvg * 0.2) {
+        setDistanceElement(message + "<span id='hint'>Warm</span>");
+      } else if (distance <= sideAvg * 0.4) {
+        setDistanceElement(message + "<span id='hint'>Cold</span>");
+      } else if (distance <= sideAvg * 0.8) {
+        setDistanceElement(message + "<span id='hint'>Really cold</span>");
+      } else {
+        setDistanceElement(message + "<span id='hint'>Freezing!</span>")
+      }
+    }
+
+    var setDistanceElement = (text) => {
+      document.getElementById("distance").innerHTML = text;
+      var element = document.getElementById("hint");
+      if (text.includes("hot") || text.includes("Hot") || text.includes("Warm")) element.className = "hot";
+      else element.className = "cold";
+    };
+
+    function setTreasure() {
+      return {
+        x: getRandom(width),
+        y: getRandom(height)
+      };
+    }
+  </script>
 </body>
 </html>
