@@ -47,7 +47,8 @@
 // console.log('DISTANCE', distance);
       numClicks++;
       if (numClicks >= 50) {
-
+        window.alert("Arr! Ye have not found the treasure after 50 clicks. Try again, ye sorry  excuse for a pirate.");
+        resetGame();
       }
       if (distance <= sideAvg * 0.02) {
         window.alert(`Congratulations! You found the treasure in ${numClicks} clicks!`);
